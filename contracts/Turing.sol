@@ -27,7 +27,6 @@ contract TuringToken is ERC20 {
 	address payable private teacher = payable(0x502542668aF09fa7aea52174b9965A7799343Df7);
 	address private owner;
 
-	//apparently solidity docs has an example just for this (but i'm too lazy to copy):
 	//https://docs.soliditylang.org/en/latest/types.html#mapping-types
 	mapping(string => address payable) private balances;
 	uint8 balances_count = 0;
@@ -71,7 +70,6 @@ contract TuringToken is ERC20 {
 		}
 	}
 
-	//TODO: do i have to use 'payable' here for the function definition?
 	//https://docs.alchemy.com/docs/solidity-payable-functions
 	function issueToken(string calldata codename, uint256 amount) public payable senderIsOwnerOrTeacher {
 		//require((msg.sender == owner) || (msg.sender == teacher), "Only the owner/teacher can run this method");
@@ -84,25 +82,18 @@ contract TuringToken is ERC20 {
 		emit TokenIssued(msg.sender, receiver, amount);
 	}
 
-	//TODO: do i have to use 'payable' here for the function definition?
 	//https://docs.alchemy.com/docs/solidity-payable-functions
 	function vote(string calldata codename, uint256 amount) public payable votingOpen {
 		address receiver = balances[codename];
 
-		//i hope this works:
-		//1 wei = 1, 1 gwei = 10^9 wei, 1 ether = 10^18 wei
 		//reference: https://solidity-by-example.org/ether-units/
-		//require(voting, "Voting is off");
 		require(msg.sender != receiver, "You cannot vote yourself");
 		require(canVote[msg.sender][receiver], "You cannot vote twice for a user");
-		//require(amount < 2*ether, "You cannot vote with more than 2*10**18");
 		require(amount < 2_000_000_000_000_000_000, "You cannot vote with more than 2*10**18");
 
 		//the caller will only be able to vote once for 'codename'
 		canVote[msg.sender][receiver] = false;
 
-		//the teacher wanted us to call '_mint' instead of transfer
-		//msg.sender.transfer(receiver);
 		_mint(receiver, amount);
 
 		//according to https://docs.soliditylang.org/en/latest/types.html#rational-and-integer-literals,
@@ -126,23 +117,26 @@ contract TuringToken is ERC20 {
 
 
 	//https://docs.soliditylang.org/en/latest/contracts.html#function-modifiers
-	//modifier votingOpen() internal{
 	modifier votingOpen() {
 		require(voting, "Voting is off");
 		_;
 	}
+
 	//modifier senderDiffersReceiver(receiver) {
 	//	require(msg.sender != receiver, "You cannot vote yourself");
 	//	_;
 	//}
+
 	//modifier firstVote(receiver) {
 	//	require(canVote[msg.sender][receiver], "You cannot vote twice for a user");
 	//	_;
 	//}
+
 	//modifier maxAmount(amount) {
 	//	require(amount < 2*ether, "You cannot vote with more than 2*10**18");
 	//	_;
 	//}
+
 	modifier senderIsOwnerOrTeacher() {
 		require((msg.sender == owner) || (msg.sender == teacher), "Only the owner/teacher can run this method");
 		_;

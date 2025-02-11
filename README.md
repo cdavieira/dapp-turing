@@ -1,12 +1,31 @@
-# dApp
-'react' for the frontend
+# dapp-turing
+This is a dapp for my blockchain class
 
-'ethers.js' and 'hardhat' to interact with the blockchain and with the
-providers (wallets such as metamask and so on)
+The frontend was made using react v19
 
-'chai' for testing
+This app interacts with a chain/a wallet (such as metamask) through
+'ethers.js' (using its WebProvider class)
 
-'ignition' for deploying (this is related to hardhat aswell)
+'hardhat' was mainly used to deploy a local blockchain for testing and also to
+deploy this dapp through *ignition* (refer to their docs for further
+explanation)
+
+and i used 'chai' for testing :)
+
+
+
+
+
+## screenshots
+
+![Initial screen](./assets/initial-screen.png)
+
+![Screen once logged](./assets/connected2localhost.png)
+
+![Rank of all accounts connected](./assets/account-rank.png)
+
+
+
 
 
 ## how to run this app
@@ -23,7 +42,8 @@ yarn
 yarn run start
 ```
 
-then open <http://localhost:3000> in your favorite browser and try it out :)
+Then open <http://localhost:3000> in your favorite browser and try it out :)
+
 
 
 
@@ -34,13 +54,11 @@ yarn run deploy
 cp ./artifacts/contracts/Turing.sol/TuringToken.json ./frontend/src
 ```
 
-if you don't do that after restarting the local blockchain, then you will face
-[this error](https://ethereum.stackexchange.com/questions/161483/polygon-zkevm-get-token-balance-error-could-not-decode-result-data)
 
 
 
 ## how to redeploy the contract to a different network?
-change the `defaultNetwork: "localhost"` option from `hardhart.config.js` to
+Change the `defaultNetwork: "localhost"` option from `hardhart.config.js` to
 something else and redeploy
 
 
