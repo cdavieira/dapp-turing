@@ -12,6 +12,7 @@ function SimpleButton( { labelMsg, btnMsg, clickHandler, className } ){
   )
 }
 
+//reference: https://www.w3schools.com/howto/howto_css_switch.asp
 function ToggleButton( { label, handlerLeft, handlerRight, initialState, className } ){
   const [isChecked, setIsChecked] = useState(initialState);
   function handleChange(event){

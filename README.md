@@ -1,10 +1,12 @@
 # dapp-turing
 This is a dapp for my blockchain class
 
-The frontend was made using react v19
-
 This app interacts with a chain/a wallet (such as metamask) through
 'ethers.js' (using its WebProvider class)
+
+The frontend was made using react v19
+
+most of the styling was generated with chatgpt and i tweaked it a little bit
 
 'hardhat' was mainly used to deploy a local blockchain for testing and also to
 deploy this dapp through *ignition* (refer to their docs for further
