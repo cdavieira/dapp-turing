@@ -1,0 +1,44 @@
+ol {
+  list-style: none; /* Remove default numbering */
+  counter-reset: rank; /* Reset counter for custom numbering */
+  padding: 0;
+  margin: 20px 0;
+}
+
+ol li {
+  counter-increment: rank; /* Increment counter for each <li> */
+  position: relative;
+  padding: 10px 15px 10px 40px; /* Add left padding to accommodate the custom number */
+  background: #f9f9f9; /* Light background for each item */
+  margin-bottom: 10px;
+  border-radius: 6px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+ol li::before {
+  content: counter(rank) "."; /* Display custom counter */
+  position: absolute;
+  top: 50%;
+  left: 10px; /* Position the number 10px from the left */
+  transform: translateY(-50%); /* Center vertically */
+  font-weight: bold;
+  font-size: 18px;
+  color: #333; /* Blue color for numbers, #007bff */
+}
+
+ol li:first-child {
+  background: #ffd700; /* Gold background for the top rank */
+  color: #000;
+  font-weight: bold;
+}
+
+ol li:nth-child(2) {
+  background: #c0c0c0; /* Silver background for the second rank */
+}
+
+ol li:nth-child(3) {
+  background: #cd7f32; /* Bronze background for the third rank */
+}

@@ -1,0 +1,22 @@
+/* Voting Section */
+.voting-section {
+  margin-top: 20px;
+}
+
+.voting-item {
+  margin-bottom: 10px;
+}
+
+.voting-item button {
+  background: #ffc107;
+  color: #333;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.voting-item button:hover {
+  background: #e0a800;
+}

@@ -1,0 +1,47 @@
+/* Info Section */
+.info-section {
+  margin-bottom: 20px;
+}
+
+.info-item {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-item p {
+  margin: 0;
+}
+
+.info-item button {
+  background: #007bff;
+  margin-left: 10px;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.info-item button:hover {
+  background: #0056b3;
+}
+
+#dapp-title {
+  font-size: 24px; /* Larger text size */
+  font-weight: bold; /* Make it stand out */
+  color: #222; /* Blue color for emphasis, #007bff */
+  text-align: center; /* Center the text */
+  margin-bottom: 20px; /* Add spacing below */
+}
+
+#account-rank {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
