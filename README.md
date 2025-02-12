@@ -50,8 +50,12 @@ yarn run node &
 # deploy the contract to the local chain using hardhat-ignition
 yarn run deploy
 
+# cd to the frontend folder and install dependencies
+cd frontend
+yarn
+
 # open the frontend at <http://localhost:3000>
-yarn run frontend
+yarn run start
 ```
 
 
@@ -97,3 +101,4 @@ Labs
 * [Lab 12](https://jamesbachini.com/solidity-for-beginners/)
 * [Lab 13](https://vitto.cc/how-to-create-and-deploy-an-erc20-token-in-20-minutes/)
 * [Lab 14](https://pt.w3d.community/fatimalima/como-construir-seu-dapp-usando-a-moderna-ethereum-tech-stack-hardhat-e-ethersjs-20n7)
+
