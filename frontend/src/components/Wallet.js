@@ -1,31 +1,31 @@
-import { FormText, FormText2 } from '../components/Forms'
-import { SimpleButton, ToggleButton } from '../components/Buttons'
+import { FormText, FormSelectAndText } from '../components/Forms'
+import { ToggleButton } from '../components/Buttons'
 import './Wallet.css'
 
-function Wallet({ contract }){
+function Wallet({ contract, accounts }){
   return (
     <>
       <ToggleButton
 	label={'Voting'}
 	className={'voting-switch'}
 	initialState={true}
-	handlerRight={() => {console.log('turning on voting');contract.votingOn();}}
-	handlerLeft={() => {console.log('turning off voting');contract.votingOff();}}
+	handlerRight={() => contract.votingOn()}
+	handlerLeft={() => contract.votingOff()}
       />
-      <FormText2
-	name={'issueTokenButton'}
-	buttonMsg={'RUN'}
+      <FormSelectAndText
+	name={'issueToken'}
+	options={accounts}
 	labelMsg={'Issue tokens to address: '}
-	placeholder1Msg={'codename'}
-	placeholder2Msg={'amount'}
+	buttonMsg={'RUN'}
+	textPlaceholderMsg={'amount'}
 	submitHandler={(addr, amount) => contract.issueToken(addr, amount)}
       />
-      <FormText2
-	name={'voteButton'}
-	buttonMsg={'RUN'}
+      <FormSelectAndText
+	name={'vote'}
+	options={accounts}
 	labelMsg={'Vote for address: '}
-	placeholder1Msg={'codename'}
-	placeholder2Msg={'amount'}
+	buttonMsg={'RUN'}
+	textPlaceholderMsg={'amount'}
 	submitHandler={(addr, amount) => contract.vote(addr, amount)}
       />
       <FormText
@@ -38,19 +38,5 @@ function Wallet({ contract }){
     </>
   )
 }
-      // <div className='voting-section'>
-	// <SimpleButton
-	  // className={'voting-item'}
-	  // labelMsg={'Voting: '}
-	  // btnMsg={'turn on'}
-	  // clickHandler={() => contract.votingOn()}
-	// />
-	// <SimpleButton
-	  // className={'voting-item'}
-	  // labelMsg={'Voting: '}
-	  // btnMsg={'turn off'}
-	  // clickHandler={() => contract.votingOff()}
-	// />
-      // </div>
 
 export default Wallet;

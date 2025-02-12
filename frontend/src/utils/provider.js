@@ -104,6 +104,7 @@ async function getAccounts(provider){
       addr: addr,
       last_update: new Date(),
       transaction_ongoing: false,
+      accountNumber: idx+1,
     }
   });
   return accounts;

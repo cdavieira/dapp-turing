@@ -73,7 +73,6 @@ contract TuringToken is ERC20 {
 	//https://docs.alchemy.com/docs/solidity-payable-functions
 	function issueToken(string calldata codename, uint256 amount) public payable senderIsOwnerOrTeacher {
 		//require((msg.sender == owner) || (msg.sender == teacher), "Only the owner/teacher can run this method");
-		require(balances[codename] != address(0x0), "issueToken failed because the requested codename does not exist in this contract");
 		address receiver = balances[codename];
 
 		console.log("%s receives %s", receiver, amount);
@@ -85,16 +84,12 @@ contract TuringToken is ERC20 {
 
 	//https://docs.alchemy.com/docs/solidity-payable-functions
 	function vote(string calldata codename, uint256 amount) public payable votingOpen {
-		require(balances[codename] != address(0x0), "vote failed because the requested codename does not exist in this contract");
-
 		address receiver = balances[codename];
 
 		//reference: https://solidity-by-example.org/ether-units/
 		require(msg.sender != receiver, "You cannot vote yourself");
 		require(canVote[msg.sender][receiver], "You cannot vote twice for a user");
 		require(amount < 2_000_000_000_000_000_000, "You cannot vote with more than 2*10**18");
-		require(msg.sender != owner, "The owner cannot vote");
-		require(msg.sender != teacher, "The teacher cannot vote");
 
 		//the caller will only be able to vote once for 'codename'
 		canVote[msg.sender][receiver] = false;

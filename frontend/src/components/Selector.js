@@ -23,7 +23,6 @@ function ProviderSelector({ providers, connectProvider }){
 
 function AccountSelector( { accounts, connectAccount } ){
   //NOTE: if accounts.length === 0 and the code gets here, then the form will be empty
-  //NOTE: if accounts.length === 0 and the code doesn't get here, then no forms is displayed
   return (
     <FormSelect
       name={'signer'}

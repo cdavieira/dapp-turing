@@ -23,7 +23,7 @@ export default function App() {
   const [contractAddr, setContractAddr] = useState(null); //this state is not necessary, but its convenient
 
   //Stage 4: get information associated with all accounts and with that contract
-  let clearIntervalRef = useRef(null);
+  let clearTimeoutRef = useRef(null);
 
   async function connectProvider(providerName){
     const provider = getProvider(providerName);
@@ -54,9 +54,21 @@ export default function App() {
     setSigner(null);
   }
 
+  function sortAccountsByAmount(accounts){
+    accounts.sort((acc1, acc2) => (parseFloat(acc2.amount) - parseFloat(acc1.amount)));
+  }
+
+  function sortAccountsByName(accounts){
+    accounts.sort((acc1, acc2) => acc1.name.localeCompare(acc2.name));
+  }
+
+  function sortAccountsByAccountNumber(accounts){
+    accounts.sort((acc1, acc2) => (acc1.accountNumber - acc2.accountNumber));
+  }
+
   function updateAccounts(contract){
     const updatedAccounts = contract.commit();
-    updatedAccounts.sort((acc1, acc2) => (parseFloat(acc2.amount) - parseFloat(acc1.amount)));
+    sortAccountsByAmount(updatedAccounts);
     setAccounts(updatedAccounts);
   }
 
@@ -69,15 +81,31 @@ export default function App() {
   }
 
   async function changeContract(){
-    if(clearIntervalRef !== null){
-      clearInterval(clearIntervalRef);
-      clearIntervalRef = null;
+    if(clearTimeoutRef !== null){
+      clearTimeout(clearTimeoutRef);
+      clearTimeoutRef = null;
     }
     if(contract !== null){
       await contract.removeListeners();
     }
     setContract(null);
     setContractAddr(null);
+  }
+
+  function feedWalletSelection(accounts){
+    const shallowCopy = accounts.slice();
+    sortAccountsByAccountNumber(shallowCopy);
+    return shallowCopy.map((acc) => { return {id: acc.addr, value: acc.name}; })
+  }
+
+  function refreshAccountTracker(seconds){
+    //https://stackoverflow.com/questions/60458193/how-can-you-trigger-a-rerender-of-a-react-js-component-every-minute
+    console.log("Refreshing account rank");
+    if(clearTimeoutRef !== null){
+      clearTimeout(clearTimeoutRef);
+      clearTimeoutRef = null;
+    }
+    clearTimeoutRef = setTimeout(() => updateAccounts(contract), seconds*1000);
   }
 
   return (
@@ -127,23 +155,21 @@ export default function App() {
 	  connectAccount={connectAccount}
 	/>
       }
-      {
-	signer !== null && contract === null &&
+      { signer !== null && contract === null &&
 	<ContractSelector
 	  signer={signer}
 	  connectContract={connectContract}
 	/>
       } { contract !== null &&
 	<>
-	  <Wallet contract={contract} />
-	  <p id="account-rank"> Account rank</p>
+	  <Wallet
+	    contract={contract}
+	    accounts={feedWalletSelection(accounts)}
+	  />
+	  <p id="account-rank">Account rank</p>
 	  <AccountTracker
 	    accounts={accounts}
-	    setRefreshCallback={() => {
-	      //https://stackoverflow.com/questions/60458193/how-can-you-trigger-a-rerender-of-a-react-js-component-every-minute
-	      console.log("Refreshing account rank");
-	      clearIntervalRef = setInterval(() => {updateAccounts(contract); }, 15*1000);
-	    }}
+	    setRefreshCallback={() => refreshAccountTracker(20)}
 	  />
 	</>
       }

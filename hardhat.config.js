@@ -8,11 +8,11 @@ module.exports = {
   defaultNetwork: "localhost",
   networks: {
     hardhat: {
-      chainId: 1337, // Matches the Hardhat node chain ID
-    }, // In-process network
+      chainId: 31337,
+    },
     localhost: {
-      url: "http://127.0.0.1:8545", // The local Hardhat node
-      chainId: 1337, // Matches the Hardhat node chain ID
+      url: "http://127.0.0.1:8545",
+      chainId: 31337,
     },
   }
 };

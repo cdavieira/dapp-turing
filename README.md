@@ -9,8 +9,8 @@ The frontend was made using react v19
 most of the styling was generated with chatgpt and i tweaked it a little bit
 
 'hardhat' was mainly used to deploy a local blockchain for testing and also to
-deploy this dapp through *ignition* (refer to their docs for further
-explanation)
+deploy this dapp through *ignition* (refer to [their docs](https://hardhat.org/ignition/docs/reference/cli-commands)
+for further explanation)
 
 and i used 'chai' for testing :)
 
@@ -31,29 +31,36 @@ and i used 'chai' for testing :)
 
 
 ## how to run this app
-```
-yarn
-yarn exec hardhat compile
-rm -rf ./ignition/deployments/chain-1337/
-yarn exec hardhat node &
-yarn run deploy
-# !!!!! confirm the deploy by typing 'y' !!!!!
-cp ./artifacts/contracts/Turing.sol/TuringToken.json ./frontend/src
-cd frontend/
-yarn
-yarn run start
-```
+```bash
+# cd to where you cloned this repo
+cd /path/to/this/repo
 
-Then open <http://localhost:3000> in your favorite browser and try it out :)
+# install dependencies
+yarn
+
+# clear any previous deploy
+yarn run clean
+
+# generate the contract artifacts and copy them to ./frontend/src
+yarn run compile
+
+# start the local chain with hardhat at http://127.0.0.1:8545
+yarn run node &
+
+# deploy the contract to the local chain using hardhat-ignition
+yarn run deploy
+
+# open the frontend at <http://localhost:3000>
+yarn run frontend
+```
 
 
 
 
 ## how to redeploy the contract?
 ```
-rm -rf ./ignition/deployments/chain-1337/
+yarn run clean
 yarn run deploy
-cp ./artifacts/contracts/Turing.sol/TuringToken.json ./frontend/src
 ```
 
 

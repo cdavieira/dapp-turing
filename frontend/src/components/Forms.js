@@ -245,6 +245,75 @@ function FormSelectStateless({
 
 
 
+function FormSelectAndText({
+  name,
+  options,
+  labelMsg,
+  buttonMsg,
+  textPlaceholderMsg,
+  submitHandler,
+}){
+  let hasOpts = options.length > 0;
+  let initialValue = '';
+  if(hasOpts && (options[0] instanceof Object)){
+    initialValue = options[0].value;
+  }
+
+  const [value, setValue] = useState(initialValue);
+  const [text, setText] = useState('');
+
+  let formId = `${name}SelectTextForm`
+  let selectId = `${name}SelectTextFormSelectId`;
+  let inputId = `${name}SelectTextFormTextId`;
+  const selectOptions = options.map((opt, idx) => {
+    let val = opt;
+    let key = idx;
+    if(opt instanceof Object){
+      val = opt.value;
+      key = 'id' in opt ? opt.id : idx;
+    }
+    return (
+      <option value={val} key={key}>
+	{val}
+      </option>
+    )
+  });
+
+  function submitHandlerWrapper(e){
+    e.preventDefault();
+    submitHandler(value, text);
+  }
+
+  return (
+    <form className="form-section" onSubmit={submitHandlerWrapper}>
+      <label htmlFor={formId}> {labelMsg} </label>
+      <select
+	id={selectId}
+	name={formId}
+	value={value}
+	onChange={(e) => setValue(e.target.value)}>
+	{selectOptions}
+      </select>
+      <input
+	id={inputId}
+	name={formId}
+	type="text"
+	value={text}
+	onChange={(event) => setText(event.target.value)}
+	placeholder={textPlaceholderMsg}
+      />
+      <button type="submit">{buttonMsg}</button>
+    </form>
+  )
+}
+
+
+
+
+
+
+
+
 export {
   FormText,
   FormTextStateless,
@@ -254,4 +323,5 @@ export {
   FormRadioStateless,
   FormSelect,
   FormSelectStateless,
+  FormSelectAndText,
 };
