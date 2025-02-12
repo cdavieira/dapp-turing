@@ -36,10 +36,11 @@ class TuringContractProxy {
 
   #senderAddr = null; //actually a promise, be careful
 
-  constructor(addr, signer, accounts){
+  constructor(addr, signer, accounts, setAccounts){
     //https://docs.ethers.org/v6/api/contract/#BaseContract
     this.base = new ethers.Contract(addr, turing_abi, signer);
     this.addListeners();
+    this.setAccounts = setAccounts;
     this.#senderAddr = signer.getAddress();
     accounts.forEach((account) => {
       let key = account.addr.toLowerCase();
@@ -145,6 +146,7 @@ class TuringContractProxy {
     else{
       console.log(`ERROR: Transaction ${hash} hasn't been removed from the list of pending transactions`);
     }
+    this.setAccounts(this.commit());
   }
 
   #voteHandler(voterAddr, votedAddr, amountReceived, data){
@@ -158,6 +160,7 @@ class TuringContractProxy {
     else{
       console.log(`ERROR: Transaction ${hash} hasn't been removed from the list of pending transactions`);
     }
+    this.setAccounts(this.commit());
   }
 
   async addListeners(){

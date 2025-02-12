@@ -1,6 +1,6 @@
 import { OrderedList } from './Lists';
 
-function AccountTracker({ accounts, setRefreshCallback }){
+function AccountTracker({ accounts }){
   const shallowCopy = accounts.slice();
   const items = shallowCopy.map((acc) => {
     return { id: acc.addr, value: acc}
@@ -11,8 +11,6 @@ function AccountTracker({ accounts, setRefreshCallback }){
     let transactionPending = account.transaction_ongoing ? 'Has transactions pending' : 'No transactions pending';
     return `${accountId} (${account.amount} TGK) (${transactionPending})`;
   }
-
-  setRefreshCallback();
 
   return (
     <OrderedList

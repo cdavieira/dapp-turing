@@ -22,12 +22,33 @@ export default function App() {
   const [contract, setContract] = useState(null);
   const [contractAddr, setContractAddr] = useState(null); //this state is not necessary, but its convenient
 
-  //Stage 4: get information associated with all accounts and with that contract
-  let clearTimeoutRef = useRef(null);
-
   async function connectProvider(providerName){
     const provider = getProvider(providerName);
+
     // setupProvider(provider);
+    // switch(providerName){
+    //   case 'Metamask':
+	// try{
+	  // const metamaskAccounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+	  // const selectedAccount = metamaskAccounts[0];
+	  // const account = await provider.getSigner(selectedAccount);
+	  // // const network  = await provider.getNetwork();
+	  // setProvider(provider);
+	  // setProviderName(providerName);
+	  // setAccountAddr(selectedAccount);
+	  // setSigner(account);
+	// }
+	// catch(err){
+	  // if (err.code === 4001) {
+	    // console.log("Please connect to MetaMask.")
+	  // } else {
+	    // console.error(err)
+	  // }
+	// }
+	// return ;
+    //   default:
+	// break;
+    // }
     setProvider(provider);
     fillAccounts(provider, setAccounts);
     setProviderName(providerName);
@@ -66,25 +87,17 @@ export default function App() {
     accounts.sort((acc1, acc2) => (acc1.accountNumber - acc2.accountNumber));
   }
 
-  function updateAccounts(contract){
+  async function connectContract(addr){
+    const contract = new TuringContractProxy(addr, signer, accounts, setAccounts);
+    await contract.poll();
     const updatedAccounts = contract.commit();
     sortAccountsByAmount(updatedAccounts);
     setAccounts(updatedAccounts);
-  }
-
-  async function connectContract(addr){
-    const contract = new TuringContractProxy(addr, signer, accounts);
-    await contract.poll();
-    updateAccounts(contract);
     setContract(contract);
     setContractAddr(await contract.getContractAddress());
   }
 
   async function changeContract(){
-    if(clearTimeoutRef !== null){
-      clearTimeout(clearTimeoutRef);
-      clearTimeoutRef = null;
-    }
     if(contract !== null){
       await contract.removeListeners();
     }
@@ -98,14 +111,10 @@ export default function App() {
     return shallowCopy.map((acc) => { return {id: acc.addr, value: acc.name}; })
   }
 
-  function refreshAccountTracker(seconds){
-    //https://stackoverflow.com/questions/60458193/how-can-you-trigger-a-rerender-of-a-react-js-component-every-minute
-    console.log("Refreshing account rank");
-    if(clearTimeoutRef !== null){
-      clearTimeout(clearTimeoutRef);
-      clearTimeoutRef = null;
-    }
-    clearTimeoutRef = setTimeout(() => updateAccounts(contract), seconds*1000);
+  function feedAccountTracker(accounts){
+    const shallowCopy = accounts.slice();
+    sortAccountsByAmount(shallowCopy);
+    return shallowCopy;
   }
 
   return (
@@ -168,8 +177,7 @@ export default function App() {
 	  />
 	  <p id="account-rank">Account rank</p>
 	  <AccountTracker
-	    accounts={accounts}
-	    setRefreshCallback={() => refreshAccountTracker(20)}
+	    accounts={feedAccountTracker(accounts)}
 	  />
 	</>
       }
