@@ -20,13 +20,12 @@ function ToggleButton( { label, handlerLeft, handlerRight, initialState, classNa
     // event.preventDefault();
     const checked = event.target.checked;
     setIsChecked(checked);
-  }
-
-  if(isChecked === true){
-    handlerRight();
-  }
-  else{
-    handlerLeft();
+    if(checked === true){
+      handlerRight();
+    }
+    else{
+      handlerLeft();
+    }
   }
 
   return (

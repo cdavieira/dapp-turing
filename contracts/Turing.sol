@@ -146,4 +146,20 @@ contract TuringToken is ERC20 {
 		require((msg.sender == owner) || (msg.sender == teacher), "Only the owner/teacher can run this method");
 		_;
 	}
+
+	fallback() external payable {
+		console.log("----- fallback:", msg.value);
+	}
+
+	receive() external payable {
+		console.log("----- receive:", msg.value);
+	}
+
+	function supportsInterface(bytes4 interfaceID) external pure returns (bool) {
+		return interfaceID == type(IERC20).interfaceId; // If your token is ERC-20
+	}
+
+	function decimals() override public pure returns (uint8) {
+		return 18;
+	}
 }
