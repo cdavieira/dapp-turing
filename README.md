@@ -36,12 +36,13 @@ and i used 'chai' for testing :)
 cd /path/to/this/repo
 
 # install dependencies
+cd blockchain/hardhat-v2
 yarn
 
 # clear any previous deploy
 yarn run clean
 
-# generate the contract artifacts and copy them to ./frontend/src
+# generate the contract artifacts and copy them to frontend/src
 yarn run compile
 
 # start the local chain with hardhat at http://127.0.0.1:8545
@@ -51,7 +52,7 @@ yarn run node &
 yarn run deploy
 
 # cd to the frontend folder and install dependencies
-cd frontend
+cd ../../frontend
 yarn
 
 # open the frontend at <http://localhost:3000>

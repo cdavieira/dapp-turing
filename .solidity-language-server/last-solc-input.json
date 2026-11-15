@@ -1,0 +1,27 @@
+{
+  "language": "Solidity",
+  "settings": {
+    "outputSelection": {
+      "*": {
+        "": [
+          "ast"
+        ],
+        "*": [
+          "devdoc",
+          "userdoc",
+          "evm.methodIdentifiers",
+          "storageLayout",
+          "transientStorageLayout"
+        ]
+      }
+    },
+    "remappings": []
+  },
+  "sources": {
+    "blockchain/hardhat-v3/contracts/Turing.sol": {
+      "urls": [
+        "blockchain/hardhat-v3/contracts/Turing.sol"
+      ]
+    }
+  }
+}
