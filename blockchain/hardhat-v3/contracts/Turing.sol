@@ -23,20 +23,21 @@ contract TuringToken is ERC20 {
 
 	// Variables
 	//   Private
-	address immutable private owner;
-	address payable constant private teacher = payable(0x502542668aF09fa7aea52174b9965A7799343Df7);
+	address payable constant private ADMIN = payable(0x502542668aF09fa7aea52174b9965A7799343Df7);
+	uint256 constant private MAX_AMOUNT = 2_000_000_000_000_000_000;
+	uint256 constant private VOTE_REWARD = 200_000_000_000_000_000;
+	address immutable private OWNER;
 	mapping(string => address payable) private participant_name_to_address;
 	mapping(uint256 => string) private participant_index_to_name;
 	mapping(address => mapping (address => bool)) private participant_address_to_vote_status;
-
 	//   Public
 	bool voting = true;
 	uint8 participant_name_to_address_count = 0;
 
 	// Constructor
 	constructor() ERC20("TuringToken", "TGK"){
-		owner = msg.sender;
-		// console.log("Owner: %s", msg.sender);
+		OWNER = msg.sender;
+
 		this.addLocalParticipants();
 	}
 
@@ -80,10 +81,11 @@ contract TuringToken is ERC20 {
 		this.addParticipant("nome19",0xdD2FD4581271e230360230F9337D5c0430Bf44C0);
 	}
 
-	function issueToken(string calldata codename, uint256 amount) public payable senderIsOwnerOrTeacher {
-		require(participant_name_to_address[codename] != address(0x0), "issueToken failed because the requested codename does not exist in this contract");
-
-		address receiver = participant_name_to_address[codename];
+	function issueToken(string calldata name, uint256 amount) public payable
+		senderIsOwnerOrAdmin
+		participantExists(name)
+	{
+		address receiver = participant_name_to_address[name];
 
 		console.log("%s receives %s", receiver, amount);
 
@@ -92,40 +94,36 @@ contract TuringToken is ERC20 {
 		emit TokenIssued(msg.sender, receiver, amount);
 	}
 
-	function vote(string calldata codename, uint256 amount) public payable votingOpen {
-		require(participant_name_to_address[codename] != address(0x0), "vote failed because the requested codename does not exist in this contract");
+	function vote(string calldata name, uint256 amount) public payable
+		votingOpen
+		participantExists(name)
+		senderDiffersReceiver(name)
+		maxAmount(amount)
+		firstVote(name)
+		senderIsNotInternal
+	{
+		address receiver = participant_name_to_address[name];
 
-		address receiver = participant_name_to_address[codename];
-
-		require(msg.sender != receiver, "You cannot vote yourself");
-		require(participant_address_to_vote_status[msg.sender][receiver], "You cannot vote twice for a user");
-		require(amount < 2_000_000_000_000_000_000, "You cannot vote with more than 2*10**18");
-		require(msg.sender != owner, "The owner cannot vote");
-		require(msg.sender != teacher, "The teacher cannot vote");
-
-		//the caller will only be able to vote once for 'codename'
 		participant_address_to_vote_status[msg.sender][receiver] = false;
 
 		_mint(receiver, amount);
 
-		_mint(msg.sender, 200_000_000_000_000_000);
+		_mint(msg.sender, VOTE_REWARD);
 
 		emit Voted(msg.sender, receiver, amount);
 	}
 
-	function votingOn() public senderIsOwnerOrTeacher {
+	function votingOn() public senderIsOwnerOrAdmin {
 		voting = true;
 	}
 
-	function votingOff() public senderIsOwnerOrTeacher {
+	function votingOff() public senderIsOwnerOrAdmin {
 		voting = false;
 	}
 
-	function getAccountAddress(string calldata codename) external view returns (address){
-		return participant_name_to_address[codename];
+	function getAccountAddress(string calldata name) external view returns (address){
+		return participant_name_to_address[name];
 	}
-
-	// Private API
 
 	// Modifiers
 	modifier votingOpen() {
@@ -133,8 +131,8 @@ contract TuringToken is ERC20 {
 		_;
 	}
 
-	modifier senderDiffersReceiver(receiver) {
-		require(msg.sender != receiver, "You cannot vote yourself");
+	modifier senderDiffersReceiver(name) {
+		require(msg.sender != participant_name_to_address[name], "You cannot vote yourself");
 		_;
 	}
 
@@ -143,13 +141,24 @@ contract TuringToken is ERC20 {
 		_;
 	}
 
-	// modifier maxAmount(amount) {
-	// 	require(amount < 2*ether, "You cannot vote with more than 2*10**18");
-	// 	_;
-	// }
+	modifier maxAmount(amount) {
+	 	require(amount < MAX_AMOUNT, "You cannot vote with more than 2 ethers");
+	 	_;
+	}
 
-	modifier senderIsOwnerOrTeacher() {
-		require((msg.sender == owner) || (msg.sender == teacher), "Only the owner/teacher can run this method");
+	modifier senderIsOwnerOrAdmin() {
+		require((msg.sender == OWNER) || (msg.sender == ADMIN), "Only the OWNER/ADMIN can run this method");
+		_;
+	}
+
+	modifier senderIsNotInternal() {
+		require(msg.sender != OWNER, "The OWNER cannot vote");
+		require(msg.sender != ADMIN, "The ADMIN cannot vote");
+		_;
+	}
+
+	modifier participantExists() {
+		require(participant_name_to_address[name] != address(0x0), "The requested participant does not exist in this contract");
 		_;
 	}
 

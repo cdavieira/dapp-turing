@@ -18,9 +18,9 @@
     "remappings": []
   },
   "sources": {
-    "blockchain/hardhat-v3/contracts/Turing.sol": {
+    "blockchain/hardhat-v3/contracts/Turing.t.sol": {
       "urls": [
-        "blockchain/hardhat-v3/contracts/Turing.sol"
+        "blockchain/hardhat-v3/contracts/Turing.t.sol"
       ]
     }
   }
