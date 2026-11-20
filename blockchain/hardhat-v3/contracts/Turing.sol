@@ -31,14 +31,12 @@ contract TuringToken is ERC20 {
 	mapping(uint256 => string) private participant_index_to_name;
 	mapping(address => mapping (address => bool)) private participant_address_to_vote_status;
 	//   Public
-	bool voting = true;
-	uint8 participant_name_to_address_count = 0;
+	bool public voting = true;
+	uint8 public participant_name_to_address_count = 0;
 
 	// Constructor
 	constructor() ERC20("TuringToken", "TGK"){
 		OWNER = msg.sender;
-
-		this.addLocalParticipants();
 	}
 
 	// Public API
@@ -87,8 +85,7 @@ contract TuringToken is ERC20 {
 	{
 		address receiver = participant_name_to_address[name];
 
-		console.log("%s receives %s", receiver, amount);
-
+		// console.log("%s receives %s", receiver, amount);
 		_mint(receiver, amount);
 
 		emit TokenIssued(msg.sender, receiver, amount);
@@ -106,8 +103,10 @@ contract TuringToken is ERC20 {
 
 		participant_address_to_vote_status[msg.sender][receiver] = false;
 
+		// console.log("%s receives %s", receiver, amount);
 		_mint(receiver, amount);
 
+		// console.log("%s receives %s", msg.sender, VOTE_REWARD);
 		_mint(msg.sender, VOTE_REWARD);
 
 		emit Voted(msg.sender, receiver, amount);
@@ -121,8 +120,14 @@ contract TuringToken is ERC20 {
 		voting = false;
 	}
 
-	function getAccountAddress(string calldata name) external view returns (address){
+	function getAccountAddress(string calldata name) public view returns (address){
 		return participant_name_to_address[name];
+	}
+
+	function canVote(string calldata voter, string calldata candidate) public view returns (bool) {
+		address voter_addr = participant_name_to_address[voter];
+		address candidate_addr = participant_name_to_address[candidate];
+		return participant_address_to_vote_status[voter_addr][candidate_addr];
 	}
 
 	// Modifiers
@@ -131,19 +136,19 @@ contract TuringToken is ERC20 {
 		_;
 	}
 
-	modifier senderDiffersReceiver(name) {
+	modifier senderDiffersReceiver(string calldata name) {
 		require(msg.sender != participant_name_to_address[name], "You cannot vote yourself");
 		_;
 	}
 
-	modifier firstVote(receiver) {
-		require(participant_address_to_vote_status[msg.sender][receiver], "You cannot vote twice for a user");
+	modifier firstVote(string calldata receiver) {
+		require(participant_address_to_vote_status[msg.sender][participant_name_to_address[receiver]], "You cannot vote twice for a user");
 		_;
 	}
 
-	modifier maxAmount(amount) {
-	 	require(amount < MAX_AMOUNT, "You cannot vote with more than 2 ethers");
-	 	_;
+	modifier maxAmount(uint256 amount) {
+		require(amount < MAX_AMOUNT, "You cannot vote with more than 2 ethers");
+		_;
 	}
 
 	modifier senderIsOwnerOrAdmin() {
@@ -157,7 +162,7 @@ contract TuringToken is ERC20 {
 		_;
 	}
 
-	modifier participantExists() {
+	modifier participantExists(string calldata name) {
 		require(participant_name_to_address[name] != address(0x0), "The requested participant does not exist in this contract");
 		_;
 	}
@@ -189,6 +194,9 @@ contract TuringToken is ERC20 {
 // About events
 // https://docs.soliditylang.org/en/latest/contracts.html#events
 
+// About custom errors and revert()
+// https://docs.soliditylang.org/en/v0.8.39/contracts.html#members-of-errors
+
 // About mapping types
 // https://docs.soliditylang.org/en/latest/types.html#mapping-types
 
@@ -205,3 +213,9 @@ contract TuringToken is ERC20 {
 // https://docs.soliditylang.org/en/v0.8.38/contracts.html#constant-and-immutable-state-variables
 // How to convert uint to string in solidity
 // https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+
+// About public/external/internal/private functions
+// https://docs.soliditylang.org/en/v0.8.39/contracts.html#function-visibility
+
+// About pure/view functions
+// https://docs.soliditylang.org/en/v0.8.39/contracts.html#state-mutability
