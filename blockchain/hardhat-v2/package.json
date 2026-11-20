@@ -21,7 +21,7 @@
   },
   "scripts": {
     "clean": "rm -rf ./ignition/deployments/*",
-    "compile": "yarn exec hardhat compile && cp ./artifacts/contracts/Turing.sol/TuringToken.json ./../../frontend/src/",
+    "compile": "yarn exec hardhat compile && cp ./artifacts/contracts/Turing.sol/TuringToken.json ./../../v1/frontend/src/",
     "node": "yarn exec hardhat node",
     "deploy": "yarn exec hardhat ignition deploy ./ignition/modules/TuringToken.js"
   },
